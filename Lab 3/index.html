@@ -72,6 +72,8 @@
                     let q2Response = $("#q2").val();
                     let q4Response = $("input[name=q4]:checked").val();
                     let q6Response = $("input[name=q6]:checked").val();
+                    let q7Response = $("#q7").val();
+                    let q8Response = $("input[name=q8]:checked").val();
                     
                     //Question 1
                     if(q1Response == "sacramento") {
@@ -116,11 +118,27 @@
                         wrongAnswer(6);
                     }
                     
+                    //question 7
+                    if (q7Response == "al") {
+                        rightAnswer(7);
+                    }else {
+                        wrongAnswer(7);
+                    }
+                    
+                    //question 8
+                    if (q8Response == "Salem") {
+                        rightAnswer(8);
+                    } else {
+                        wrongAnswer(8);
+                    }
                     
                     if(score < 80) {
-                        $("#totalScore").html(`Total Score: ${score} `).css("color", "red");;
+                        $("#totalScore").html(`Total Score: ${score} `);
+                        $("#totalScore").attr("class", "text-danger");
                     } else {
-                        $("#totalScore").html(`Total Score: ${score} `).css("color", "green");
+                        $("#totalScore").html(`Total Score: ${score} `);
+                        $("#totalScore").attr("class", "text-success");
+                        $("#congratulations").html("Congratulations! you have a score of over 80!");
                     }
                     
                     $("#totalAttempts").html(`Total Attempts: ${++attempts}`);
@@ -184,12 +202,31 @@
         <input type="radio" name="q6" id"bc" value="Buttercup"> <label for="bc">California Buttercup</label>
         <div id = "q6Feedback"></div>
         
+        <h3><span id="markImg7"></span>What is the largest State? (land mass)</h3>
+        <select id="q7">
+            <option value="">Select One</option>
+            <option value="ca">California</option>
+            <option value="tx">Texas</option>
+            <option value="al">Alaska</option>
+            <option value="rh">Rhode Island</option>
+            
+        </select>
         
+        <br><br>
+        <div id="q7Feedback"></div>
+        <br>
+        
+        <h3><span id="markImg8"></span>What is the Western Most State Capital?</h3>
+        <input type="radio" name="q8" id="sa" value="Sacramento"> <label for="sa">Sacramento, California</label>
+        <input type="radio" name="q8" id="sal" value="Salem"> <label for="sal">Salem, Oregon</label>
+        <input type="radio" name="q8" id="ol" value="Olympia"> <label for="ol">Oympia, Washington</label>
+        <div id = "q8Feedback"></div>
         
         <h3 id="validationFdbk" class="bg-danger text-white"></h3>
         <button class="btn btn-outline-success"> Submit Quiz </button>
         <br>
         <h2 id="totalScore" class="text-info"></h2>
+        <h4 id="congratulations" class="text-info"></h4>
         <h3 id="totalAttempts"></h3>
     </body>
 </htm>
