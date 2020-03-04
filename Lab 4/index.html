@@ -4,55 +4,154 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <title>Sign Up Page</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+   <link rel="stylesheet" type="text/css" href="app.css">
 </head>
 
 <body id="dummybodyid">
-  <h1> Sign Up Form </h1>
-        
+  <div id="top"><h1 class="jumbotron"> Sign Up Form </h1></div>
+      <form id="signupForm" method="get" action="welcome.html">
         First Name: <input type="text" name="fName"><br>
         Last Name: <input type="text" name="lName"><br>
         Gender: <input type="radio" name="gender" value="m"> Male
                 <input type="radio" name="gender" value="f"> Female<br><br>
-        
+                
+        <hr style="border: 2px dotted#06ba99;" />        
         Zip Code: <input type="text" name="zip" id="zip"><br>
         City: <span id="city"></span><br>
-        Latitude: <br>
-        Longitude: <br>
+        Latitude: <span id="latitude"></span><br> 
+        Longitude:<span id="longitude"></span> <br>
         State:
         <select id="state" name="state">
             <option value="">Select One</option>
-            <option value="ca"> California</option>
-            <option value="va"> New York</option>
-            <option value="tx"> Texas</option>
+           
         </select>
         
-        Select a Country: <select id="country"></select><br><br>
-        
+        Select a County: <select id="county"></select><br><br>
+        <hr style="border: 2px dotted#06ba99;" />
         Desired Username: <input type="text" id="username" name="username"><br>
+                  <span id="usernameError"></span><br>
         Password: <input type="password" id="password" name="password"><br>
         Password Again: <input type="password" id="passwordAgain"><br>
+                      <span id="passwordAgainError"></span><br /><br>
         
         <input type="submit" value="Sign up!">
-  
+      </form>
   
   <script>
+      var usernameAvailable=false;
+      
+      $(document).ready(function()
+      {
+        $.ajax({
+          method: "GET",
+          url: "https://itcdland.csumb.edu/~milara/ajax/states.php",
+          dataType: "json",
+          data: {"id:": $("#id").val() },
+          success:function(result, status) {
+            $("#state").html("<option> Select One </option>");
+            for (let i = 0; i < result.length; i++)
+            {
+               $("#state").append("<option>" + result[i].state + "</option>");
+            }
+          }
+        });
+      });
+      
       //Displaying City from API after typing a zip code
       $("#zip").on("change", function(){
-          //alert($("#zip").val());
+          // alert($("#zip").val());
           $.ajax({
               
               method: "GET",
-              url: "http://cst336.herokuapp.com/projects/api/cityInfoAPI.php",
+              url: "https://itcdland.csumb.edu/~milara/ajax/cityInfoByZip.php?zip=93955",
               dataType: "json",
               data: { "zip": $("#zip").val() },
               success: function(result, status) {
-                  alert(result)
-                //   $("#city").html(result.city);
+                  //alert(result)
+                  $("#city").html(result.city);
+                  $("#longitude").html(result.longitude);
+                  $("#latitude").html(result.latitude);
                   
               }
               });//ajax
       });//zip
+      
+      $("#state").on("change", function() {
+        //alert($("#state").val());
+        
+        $.ajax({
+          method: "GET",
+          url: "https://itcdland.csumb.edu/~milara/ajax/countyList.php?state=ca",
+          dataType: "json",
+          data: { "usps": $("#state").val().toLowerCase() },
+          success: function(result,status) {
+            //alert(result[0].county);
+            $("#county").html("<option> Select One </option>");
+            for (let i=0; i < result.length; i++){
+              $("#county").append("<option>" + result[i].county + "</option>");
+            }
+          }
+        });//ajax
+      });//state
+      
+      $("#username").change(function() {
+        // alert($("#username").val());
+        $.ajax({
+          method: "GET",
+          url: "https://cst336.herokuapp.com/projects/api/usernamesAPI.php?username=eeny",
+          dataType: "json",
+          data: { "username":$("#username").val() },
+          success: function(result,status) {
+            if(result.available)
+            {
+              $("#usernameError").html("Username is available!");
+              $("#usernameError").css("color", "green");
+              usernameAvailable = true;
+            }
+            else {
+              $("#usernameError").html("Username is unavailable!");
+              $("#usernameError").css("color", "red");
+              usernameAvailable = false;
+            }
+          }
+        });//ajax
+      });//username
+      
+      $("#signupForm").on("submit", function(e) {
+        
+        if (!isFormValid()) {
+          e.preventDefault();
+        }
+        
+      });
+      
+      function isFormValid() {
+        isValid = true;
+        if (!usernameAvailable) {
+          isValid = false;
+        }
+        
+        if ($("#username").val().length ==0) {
+          isValid = false;
+          $("#usernameError").html("Username is required");
+        }
+        
+        if ($("#password").val() != $("#passwordAgain").val()) {
+          $("#passwordAgainError").html("Password Mismatch!");
+          isValid = false;
+        }
+        
+        if ($("#password").val().length < 6) { 
+          $("#passwordAgainError").html("Password is too short!");
+          isValid = false;
+        }
+        
+        return isValid;
+      }
+      
+    
+      
   </script>
 </body>
 
