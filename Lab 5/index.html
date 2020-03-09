@@ -13,7 +13,8 @@
             <h1 class= jumbotron >Pixabay Image Search</h1>
         </div>
         <br><br>
-        <form class= for>
+        <div class="text-center">
+        <form class= for  action="/" method="post" onsubmit="getImages(); return false;">
             Keyword: <input type="text" id="keyword"><br>
             Orientation: <select id=orientation >
                 <option value="">Select One</option>
@@ -22,6 +23,10 @@
             </select>
             <button class="btn btn-primary">Search</button>
         </form>
+        </div>
+        <div>
+            <div id="Images"></div>
+        </div>
         
     </body>
 </html>

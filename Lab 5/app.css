@@ -1,7 +1,17 @@
 .container {
     text-align: center;
+    background-color: #d692f7 !important;
+    margin: auto;
 }
 
 .form {
     text-align: center;
+}
+
+.jumbotron {
+    background-color: #ecd5f7 !important;
+}
+
+body {
+    background-color: #dbfff7 !important;
 }
